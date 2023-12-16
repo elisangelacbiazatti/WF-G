@@ -1,0 +1,136 @@
+//** WFW Regression model  SAS - NLMIXED**//
+
+proc nlmixed cov data=dados2;
+parms  b=0.1 alpha=1   eta0=7.05  eta1=-0.67 ;
+
+
+*bounds lambda>0;
+bounds alpha>0;
+bounds b>0;
+lambda=exp(eta0+eta1*morfologia);
+
+gx=(alpha/(lambda**alpha))*(t**(alpha-1))*exp(-(t/lambda)**(alpha));
+ GGx=1-exp(-(t/lambda)**(alpha));
+ 
+ fx= b*(gx)*((1-GGx)**(-GGx))*((GGx/(1-GGx))-log(1-GGx))*(((1-GGx)**(-GGx)-1)**(b-1))*exp(-((1-GGx)**(-GGx)-1)**(b));
+ FFx=1-exp(-((1-GGx)**(-GGx)-1)**(b));
+
+ logp=censur*(log(fx))+(1-censur)*(log(1-FFx));
+model t ~ general(logp);
+run;
+
+
+//**  Weibull Regression model  **//
+
+proc nlmixed cov data=dados2;
+parms alpha=1 eta0=7.02  eta1=-0.67 ;
+
+*bounds lambda>0;
+bounds alpha>0;
+*bounds b>0;
+lambda=exp(eta0+eta1*morfologia);
+
+gx=(alpha/(lambda**alpha))*(t**(alpha-1))*exp(-(t/lambda)**(alpha));
+ GGx=1-exp(-(t/lambda)**(alpha));
+ 
+ *fx=b*(gx)*((1-GGx)**(-GGx))*((GGx/(1-GGx))-log(1-GGx))*(((1-GGx)**(-GGx)-1)**(b-1))*exp(-((1-GGx)**(-GGx)-1)**(b));
+ *FFx=1-exp(-((1-GGx)**(-GGx)-1)**(b));
+
+ logp=censur*(log(gx))+(1-censur)*(log(1-GGx));
+model t ~ general(logp);
+run;
+
+
+
+
+
+//**  WFGa Regression model **//
+
+proc nlmixed cov data=dados2;
+parms  b=0.94 alpha=0.30 eta0=9.05  eta1=-0.67 ;
+
+bounds alpha>0;
+*bounds alpha>0;
+bounds b>0;
+lambda=exp(eta0+eta1*morfologia);
+
+gx=(1/lambda)**(alpha)*(t**(alpha-1))*exp(-t/lambda)*(GAMMA(alpha)**(-1));
+ GGx=probgam(t/lambda,alpha);
+ 
+ fx= b*(gx)*((1-GGx)**(-GGx))*((GGx/(1-GGx))-log(1-GGx))*(((1-GGx)**(-GGx)-1)**(b-1))*exp(-((1-GGx)**(-GGx)-1)**(b));
+ FFx=1-exp(-((1-GGx)**(-GGx)-1)**(b));
+
+ logp=censur*(log(fx))+(1-censur)*(log(1-FFx));
+model t ~ general(logp);
+run;
+
+//**   Gamma Regression model **//
+
+
+proc nlmixed cov data=dados2;
+parms  alpha=1 eta0=7.05  eta1=-0.67  ;
+
+
+*bounds lambda>0;
+bounds alpha>0;
+*bounds b>0;
+lambda=exp(eta0+eta1*morfologia);
+
+gx=(1/lambda)**(alpha)*(t**(alpha-1))*exp(-t/lambda)*(GAMMA(alpha)**(-1));
+ GGx=probgam(t/lambda,alpha);
+ 
+ *fx= b*(gx)*((1-GGx)**(-GGx))*((GGx/(1-GGx))-log(1-GGx))*(((1-GGx)**(-GGx)-1)**(b-1))*exp(-((1-GGx)**(-GGx)-1)**(b));
+ *FFx=1-exp(-((1-GGx)**(-GGx)-1)**(b));
+
+ logp=censur*(log(gx))+(1-censur)*(log(1-GGx));
+model t ~ general(logp);
+run;
+
+
+
+
+//**  WFLL Regression model **//
+
+proc nlmixed cov data=dados2;
+parms   b=14.1 alpha=0.01 eta0=-5.05  eta1=-0.65 ;
+
+
+*bounds lambda>0;
+*bounds alpha>0;
+bounds b>0;
+lambda=exp(eta0+eta1*morfologia);
+
+gx=alpha*(lambda**(-alpha))*(t**(alpha-1))*( ( 1+(t/lambda)**(alpha) )**(-2) );
+ GGx=1-(1+(t/lambda)**(alpha))**(-1);
+ 
+ fx= b*(gx)*((1-GGx)**(-GGx))*((GGx/(1-GGx))-log(1-GGx))*(((1-GGx)**(-GGx)-1)**(b-1))*exp(-((1-GGx)**(-GGx)-1)**(b));
+ FFx=1-exp(-((1-GGx)**(-GGx)-1)**(b));
+
+ logp=censur*(log(fx))+(1-censur)*(log(1-FFx));
+model t ~ general(logp);
+run;
+
+
+
+//**  Log-logistic Regression model **//
+
+proc nlmixed cov data=dados2;
+parms alpha=1  eta0=7.05  eta1=-0.64 ;
+
+
+*bounds lambda>0;
+bounds alpha>0;
+*bounds b>0;
+lambda=exp(eta0+eta1*morfologia);
+
+gx=alpha*(lambda**(-alpha))*(t**(alpha-1))*( ( 1+(t/lambda)**(alpha) )**(-2) );
+ GGx=1-(1+(t/lambda)**(alpha))**(-1);
+ 
+ *fx= b*(gx)*((1-GGx)**(-GGx))*((GGx/(1-GGx))-log(1-GGx))*(((1-GGx)**(-GGx)-1)**(b-1))*exp(-((1-GGx)**(-GGx)-1)**(b));
+ *FFx=1-exp(-((1-GGx)**(-GGx)-1)**(b));
+
+ logp=censur*(log(gx))+(1-censur)*(log(1-GGx));
+model t ~ general(logp);
+run;
+
+
